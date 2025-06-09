@@ -1,0 +1,13 @@
+[project]
+name = "tg-parser-example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pyaes>=1.6.1",
+    "pyasn1>=0.6.1",
+    "python-dotenv>=1.1.0",
+    "rsa>=4.9.1",
+    "telethon>=1.40.0",
+]
