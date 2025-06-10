@@ -14,4 +14,5 @@ client = TelegramClient(
         os.getenv('API_HASH')
     )
 
-asyncio.run(tg_parser(url, client))
+
+asyncio.run(tg_parser(url, client, 10))

@@ -2,13 +2,14 @@ from telethon import TelegramClient
 from telethon.tl.functions.channels import GetFullChannelRequest
 
 
-async def tg_parser(url: str, client: TelegramClient) -> dict:
+async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
     """
     Функция-парсер телеграм каналов, позволяет получить данные о телеграм канале,
     включая: название, id, описание, количество подписчиков, закрепленное сообщение, последние посты.
     Параметры:
     url (str): ссылка на телеграм канал в любом из удобных видов (https://t.me/example, t.me/example, @example, example)
     client (TelegramClient): клиент телеграма из библиотеки telethon
+    limit (int): количество сообщений для парсинга, по умолчанию 10
     Возвращаемое значение:
     data (dict): словарь с данными телеграм канала
     Примечание:
@@ -32,7 +33,7 @@ async def tg_parser(url: str, client: TelegramClient) -> dict:
         if pinned_message_id:
             pinned_message = await client.get_messages(channel, ids=pinned_message_id)
         # получаем 10 последних постов из канала
-        last_messages = await client.get_messages(channel, limit=10)
+        last_messages = await client.get_messages(channel, limit=limit)
 
 
         data = {'title': channel.title,
@@ -41,12 +42,13 @@ async def tg_parser(url: str, client: TelegramClient) -> dict:
                 'username': channel.username,
                 'participants_count': participants_count if participants_count else 'Нет участников',
                 'pinned_messages': pinned_message.message if pinned_message else 'Нет закрепленного сообщения',
-                'last_messages': [{'post_id': post.id, 'post_message': post.message} for post in last_messages] if last_messages else 'Нет постов'
+                'last_messages': [{'post_id': post.id, 'post_text': post.text, 'post_views': post.views}
+                    for post in last_messages] if last_messages else 'Нет постов'
                 }
 
         print(data) # вывод в консоль для наглядности
         return data
-
+    # {'post_id': post.id, 'post_message': post.text}
     except Exception as e:
         print(f"Ошибка: {e}")
 
