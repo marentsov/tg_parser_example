@@ -41,7 +41,7 @@ async def tg_parser(url: str, client: TelegramClient) -> dict:
                 'username': channel.username,
                 'participants_count': participants_count if participants_count else 'Нет участников',
                 'pinned_messages': pinned_message.message if pinned_message else 'Нет закрепленного сообщения',
-                'last_messages': [post.message for post in last_messages] if last_messages else 'Нет постов'
+                'last_messages': [{'post_id': post.id, 'post_message': post.message} for post in last_messages] if last_messages else 'Нет постов'
                 }
 
         print(data) # вывод в консоль для наглядности
