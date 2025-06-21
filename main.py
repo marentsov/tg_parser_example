@@ -17,6 +17,6 @@ client = TelegramClient(
     )
 
 
-# asyncio.run(tg_parser(url, client, 10))
-asyncio.run(tg_search(client, query, 10))
+asyncio.run(tg_parser(url, client, 10))
+# asyncio.run(tg_search(client, query, 10))
 
