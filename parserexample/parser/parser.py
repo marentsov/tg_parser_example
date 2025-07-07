@@ -1,3 +1,4 @@
+import time
 from telethon import TelegramClient
 from telethon.tl.functions.channels import GetFullChannelRequest
 
@@ -18,6 +19,7 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
 
     try:
         await client.start()
+        time.sleep(1)
         # получаем информацию о канале
         channel = await client.get_entity(url)
         # получаем полную информацию о канале
@@ -41,13 +43,11 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
                 'description': description if description else 'Нет описания',
                 'username': channel.username,
                 'participants_count': participants_count if participants_count else 'Нет участников',
-                'pinned_messages': pinned_message.message if pinned_message else 'Нет закрепленного сообщения',
+                #'pinned_messages': pinned_message.message if pinned_message else 'Нет закрепленного сообщения',
                 'last_messages': [{'post_id': post.id, 'post_text': post.text, 'post_views': post.views}
                     for post in last_messages] if last_messages else 'Нет постов'
                 }
-
-        print(data) # вывод в консоль для наглядности
-        print(channel.__dict__)
+        print(data)
         return data
 
 
