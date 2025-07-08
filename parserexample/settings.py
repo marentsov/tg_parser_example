@@ -42,7 +42,10 @@ SECRET_KEY = 'django-insecure-z16_1fsk^b(61!l)y&%=$w0p4*fm*9kj*#2-7m5=y=o*&=%kr)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['tg-parser-example.onrender.com',]
+ALLOWED_HOSTS = [
+    'tg-parser-example.onrender.com',
+    '127.0.0.1',
+]
 
 
 # Application definition
