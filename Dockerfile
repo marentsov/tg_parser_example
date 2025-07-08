@@ -9,6 +9,4 @@ COPY . .
 
 RUN uv sync
 
-RUN make migrate
-
-CMD ["make", "render-start"]
+CMD ["sh", "-c", "make migrate && make render-start"]
