@@ -8,3 +8,6 @@ dev:
 		uv run manage.py runserver
 render-start:
 		uv run gunicorn parserexample.wsgi
+migrate:
+		uv run python manage.py makemigrations
+		uv run python manage.py migrate
