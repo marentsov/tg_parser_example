@@ -6,3 +6,5 @@ parse:
 		uv run main.py
 dev:
 		uv run manage.py runserver
+render-start:
+		uv run gunicorn parserexample.wsgi

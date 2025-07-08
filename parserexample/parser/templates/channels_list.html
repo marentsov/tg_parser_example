@@ -1,0 +1,40 @@
+<table border="1" class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Username</th>
+            <th>Подписчики</th>
+            <th>Последняя статистика</th>
+            <th>Прирост</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for channel in channels %}
+            <tr>
+                <td>{{ channel.channel_id }}</td>
+                <td>{{ channel.title }}</td>
+                <td>@{{ channel.username }}</td>
+                <td>{{ channel.participants_count }}</td>
+                <td>
+                    {% with channel.channelstats_set.latest as stat %}
+                        {% if stat %}
+                            {{ stat.parsed_at|date:"d.m.Y H:i" }}
+                        {% else %}
+                            Нет данных
+                        {% endif %}
+
+                </td>
+                <td style="color: {% if stat.daily_growth > 0 %}green{% elif stat.daily_growth < 0 %}red{% else %}grey{% endif %}">
+                    {% if stat %}
+                        {{ stat.daily_growth }}
+                    {% else %}
+                    {% endif %}
+                    {% endwith %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href={% url 'parser:parser' %} class="btn">Назад в парсер</a>

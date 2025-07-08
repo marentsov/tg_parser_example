@@ -1,8 +1,11 @@
 asgiref==3.9.0
+dj-database-url==3.0.1
 django==5.2.4
+psycopg2-binary==2.9.10
 pyaes==1.6.1
 pyasn1==0.6.1
 python-dotenv==1.1.0
 rsa==4.9.1
 sqlparse==0.5.3
 telethon==1.40.0
+whitenoise==6.9.0

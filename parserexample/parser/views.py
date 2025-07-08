@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.utils import timezone
 from django.views.generic import FormView, ListView
 from django.conf import settings
 from asgiref.sync import async_to_sync
@@ -12,11 +13,14 @@ from parserexample.parser.parser import tg_parser
 from parserexample.parser.models import TelegramChannel, ChannelStats
 
 
+def redirect_view(request):
+    return redirect('parser:parser')
+
 
 class ParserView(FormView):
     form_class = ChannelParseForm
     template_name = 'parse_channel.html'
-    success_url = reverse_lazy('parser/channels_list.hrml')
+    success_url = reverse_lazy('parser:list')
 
     def get_telegram_client(self):
         """ Получаем клиент телеграма для работы парсера """
@@ -29,6 +33,7 @@ class ParserView(FormView):
     async def async_tg_parser(self, url, limit=10):
         """ Обертка для парсера """
         client = self.get_telegram_client()
+        await client.connect()
         try:
             return await tg_parser(url, client, limit)
         finally:
@@ -36,24 +41,34 @@ class ParserView(FormView):
 
     def save_channel(self, data):
         """Создаем или обновляем канал"""
-        return TelegramChannel.objects.update_or_create(
+        channel, created = TelegramChannel.objects.update_or_create(
             channel_id=data['channel_id'],
-            title=data['title'],
-            username=data['username'],
-            description=data['description'],
-            participants_count=data['participants_count'],
-            last_messages=data['last_messages'],
+            defaults={
+                'title': data['title'],
+                'username': data['username'],
+                'description': data['description'],
+                'participants_count': data['participants_count'],
+                'last_messages': data['last_messages'],
+            }
         )
+        return channel, created
 
-    def save_stats(self, channel, stats):
+
+    def save_stats(self, channel, data):
         """Создаем запись статистики с расчетом прироста"""
         last_stats = ChannelStats.objects.filter(channel=channel).order_by('-parsed_at').first()
-        daily_growth = stats['participants_count'] - last_stats.participants_count if last_stats else 0
+        current_count = data['participants_count']
+
+        if last_stats:
+            daily_growth = current_count - last_stats.participants_count
+        else:
+            daily_growth = 0
 
         ChannelStats.objects.create(
             channel=channel,
-            participants_count=stats['participants_count'],
-            daily_growth=daily_growth
+            participants_count=data['participants_count'],
+            daily_growth=daily_growth,
+            parsed_at=timezone.now()
         )
 
 
@@ -69,7 +84,7 @@ class ParserView(FormView):
 
             # Сохранение полученных данных
             channel, created = self.save_channel(parsed_data)
-            self.save_stats(channel, parsed_data['stats'])
+            self.save_stats(channel, parsed_data)
 
             # Составление сообщения для пользователя
             message = f'Новый канал добавлен: {channel.title}' \
@@ -84,17 +99,8 @@ class ParserView(FormView):
             return self.form_invalid(form)
 
 
-
-
-
-
-
-
-
-
-
-
-
 class ParserListView(ListView):
-    pass
+    model = TelegramChannel
+    template_name = 'channels_list.html'
+    context_object_name = 'channels'
 # Create your views here.

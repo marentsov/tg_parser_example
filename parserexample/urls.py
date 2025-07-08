@@ -18,10 +18,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from parserexample.parser import views
 
-from parserexample.parser.views import ParserView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('parser/', include('parserexample.parser.urls', namespace='parser'))
+    path('', views.redirect_view, name='redirect'),
+    path('parser/', include('parserexample.parser.urls', namespace='parser')),
 ]

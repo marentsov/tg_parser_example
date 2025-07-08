@@ -12,15 +12,19 @@ class TelegramChannel(models.Model):
     participants_count = models.IntegerField(default=0, verbose_name='Количество подписчиков')
     #photo_url = models.URLField(max_length=512, blank=True, null=True, verbose_name='Ссылка на фото')
     parsed_at = models.DateTimeField(auto_now_add=True)
-    last_messages = models.TextField(blank=True, null=True, verbose_name='Последние сообщения')
+    last_messages = models.JSONField(blank=True, null=True, default=list, verbose_name='Последние сообщения')
 
     class Meta:
 
         verbose_name = 'Telegram канал'
         verbose_name_plural = 'Telegram каналы'
 
+    def last_stat(self):
+        """Получение последней статистики канала"""
+        return self.channelstats_set.order_by('-parsed_at').first()
+
     def __str__(self):
-        return f"{id} канал {self.title}"
+        return f"{self.channel_id} канал {self.title}"
 
 
 class ChannelStats(models.Model):
@@ -34,6 +38,7 @@ class ChannelStats(models.Model):
 
         verbose_name = "Статистика канала"
         verbose_name_plural = "Статистика каналов"
+        get_latest_by = 'parsed_at'
         ordering = ['-parsed_at']
 
     def __str__(self):
