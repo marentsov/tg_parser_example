@@ -41,7 +41,7 @@
             <!-- Основная информация -->
             <div class="row mb-4">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <div class="card h-100">
+                    <div class="card h-100 bg-light">
                         <div class="card-body">
                             <h5 class="card-title">Описание</h5>
                             <p class="card-text">{{ channel.description }}</p>
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card h-100">
+                    <div class="card h-100 bg-light">
                         <div class="card-body">
                             <h5 class="card-title">Статистика</h5>
                             <div class="d-flex justify-content-between">
@@ -84,7 +84,7 @@
                     {% for post in channel.last_messages %}
                         {% if post.post_text and post.post_text != 'Нет текста' %}
                         <div class="card post-card mb-3">
-                            <div class="card-body">
+                            <div class="card-body bg-light">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title mb-0">Пост #{{ post.post_id }}</h5>
                                     <span class="post-views"><i class="bi bi-eye"></i> {{ post.post_views }}</span>
