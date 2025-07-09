@@ -34,7 +34,9 @@
                                     {% for channel in channels %}
                                         <tr>
                                             <td>{{ channel.channel_id }}</td>
-                                            <td>{{ channel.title }}</td>
+                                            <td>
+                                                <a href="{% url "parser:detail" channel.id %}">{{ channel.title }}</a>
+                                            </td>
                                             <td>@{{ channel.username }}</td>
                                             <td>{{ channel.participants_count }}</td>
                                             <td>

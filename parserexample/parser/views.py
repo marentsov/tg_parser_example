@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils import timezone
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView, ListView, DetailView
 from django.conf import settings
 from asgiref.sync import async_to_sync
 from telethon import TelegramClient
@@ -103,4 +103,10 @@ class ParserListView(ListView):
     model = TelegramChannel
     template_name = 'channels_list.html'
     context_object_name = 'channels'
+
+
+class ParserDetailView(DetailView):
+    model = TelegramChannel
+    template_name = 'channel_detail.html'
+    context_object_name = 'channel'
 # Create your views here.
