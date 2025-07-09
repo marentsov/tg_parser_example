@@ -13,8 +13,11 @@ from parserexample.parser.parser import tg_parser
 from parserexample.parser.models import TelegramChannel, ChannelStats
 
 
-def redirect_view(request):
-    return redirect('parser:parser')
+def index_view(request):
+    return render(
+        request,
+        'index.html',
+    )
 
 
 class ParserView(FormView):

@@ -20,10 +20,10 @@ from django.contrib import admin
 from django.urls import path, include
 from parserexample.parser import views
 
-
+app_name = 'main'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.redirect_view, name='redirect'),
+    path('', views.index_view, name='index'),
     path('parser/', include('parserexample.parser.urls', namespace='parser')),
 ]
