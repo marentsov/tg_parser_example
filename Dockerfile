@@ -9,4 +9,4 @@ COPY . .
 
 RUN uv sync
 
-CMD ["sh", "-c", "make migrate && make render-start"]
+CMD ["sh", "-c", "make migrations && make migrate && make render-start"]
