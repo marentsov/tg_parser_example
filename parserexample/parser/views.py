@@ -75,7 +75,7 @@ class ParserView(FormView):
             channel=channel,
             participants_count=data['participants_count'],
             daily_growth=daily_growth,
-            parsed_at=timezone.now()
+            parsed_at=current_date
         )
 
 

@@ -36,7 +36,7 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
         if pinned_message_id:
             pinned_message = await client.get_messages(channel, ids=pinned_message_id)
         # получаем 10 последних постов из канала
-        last_messages = await client.get_messages(channel, limit=limit)
+        last_messages = await client.get_messages(channel, limit=limit*3)
 
 
         data = {
@@ -47,7 +47,7 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
             'participants_count': participants_count if participants_count else 'Нет участников',
             #'pinned_messages': pinned_message.message if pinned_message else 'Нет закрепленного сообщения',
             'last_messages': [{'post_id': post.id, 'post_text': post.text, 'post_views': post.views}
-                                        for post in last_messages]
+                                        for post in last_messages[:limit]]
         }
         print(data)
         return data
