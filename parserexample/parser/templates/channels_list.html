@@ -42,7 +42,7 @@
                                             <td>@{{ channel.username }}</td>
                                             <td>{{ channel.participants_count }}</td>
                                             <td>
-                                                {% with channel.channelstats_set.latest as stat %}
+                                                {% with channel.last_stat as stat %}
                                                     {% if stat %}
                                                         {{ stat.parsed_at|date:"d.m.Y H:i" }}
                                                     {% else %}

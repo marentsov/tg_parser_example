@@ -11,8 +11,11 @@ class TelegramChannel(models.Model):
     #linked_chat_id = models.BigIntegerField(blank=True, null=True, verbose_name='ID чата канала')
     participants_count = models.IntegerField(default=0, verbose_name='Количество подписчиков')
     #photo_url = models.URLField(max_length=512, blank=True, null=True, verbose_name='Ссылка на фото')
-    parsed_at = models.DateTimeField(auto_now_add=True)
+    parsed_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата парсинга')
+    pinned_messages = models.TextField(blank=True, null=True, verbose_name='Закрепленное сообщение')
+    creation_date = models.DateTimeField(null=True, blank=True, verbose_name='Дата создания')
     last_messages = models.JSONField(blank=True, null=True, default=list, verbose_name='Последние сообщения')
+    average_views = models.IntegerField(default=0, verbose_name='Среднее количество просмотров')
 
     class Meta:
 

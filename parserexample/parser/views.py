@@ -54,29 +54,35 @@ class ParserView(FormView):
                 'username': data['username'],
                 'description': data['description'],
                 'participants_count': data['participants_count'],
+                'pinned_messages': data['pinned_messages'],
                 'last_messages': data['last_messages'],
+                'average_views': data['average_views'],
             }
         )
         return channel, created
 
-
     def save_stats(self, channel, data):
         """Создаем запись статистики с расчетом прироста"""
         last_stats = ChannelStats.objects.filter(channel=channel).order_by('-parsed_at').first()
-        current_date = datetime.now()
+        current_date = timezone.now()  # Используем timezone.now() вместо datetime.now()
         current_count = data['participants_count']
 
-        if last_stats.parsed_at.date() != current_date.date():
+        if last_stats and last_stats.parsed_at.date() != current_date.date():
             daily_growth = current_count - last_stats.participants_count
         else:
-            daily_growth = last_stats.daily_growth
+            daily_growth = last_stats.daily_growth if last_stats else 0
 
+        # Создаём новую статистику
         ChannelStats.objects.create(
             channel=channel,
-            participants_count=data['participants_count'],
+            participants_count=current_count,
             daily_growth=daily_growth,
             parsed_at=current_date
         )
+
+        # Обновляем дату парсинга для телеграм канала
+        channel.parsed_at = current_date
+        channel.save(update_fields=['parsed_at'])
 
 
     def form_valid(self, form):
