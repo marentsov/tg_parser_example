@@ -49,7 +49,7 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
             'last_messages': [{'post_id': post.id, 'post_text': post.text, 'post_views': post.views}
                                         for post in last_messages]
         }
-
+        print(data)
         return data
 
 

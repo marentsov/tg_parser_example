@@ -4,9 +4,12 @@ from django.contrib import messages
 from django.utils import timezone
 from django.views.generic import FormView, ListView, DetailView
 from django.conf import settings
+
 from asgiref.sync import async_to_sync
 from telethon import TelegramClient
 from telethon.sessions import StringSession
+
+from datetime import datetime
 
 from parserexample.parser.forms import ChannelParseForm
 from parserexample.parser.parser import tg_parser
@@ -60,12 +63,13 @@ class ParserView(FormView):
     def save_stats(self, channel, data):
         """Создаем запись статистики с расчетом прироста"""
         last_stats = ChannelStats.objects.filter(channel=channel).order_by('-parsed_at').first()
+        current_date = datetime.now()
         current_count = data['participants_count']
 
-        if last_stats:
+        if last_stats.parsed_at.date() != current_date.date():
             daily_growth = current_count - last_stats.participants_count
         else:
-            daily_growth = 0
+            daily_growth = last_stats.daily_growth
 
         ChannelStats.objects.create(
             channel=channel,
