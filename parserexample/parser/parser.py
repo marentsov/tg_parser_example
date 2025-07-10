@@ -49,7 +49,6 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
             total_posts += 1
         average_views = total_views // total_posts
 
-
         data = {
             'title': channel.title,
             'channel_id': channel.id,
@@ -58,14 +57,16 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
             'participants_count': participants_count if participants_count else 'Нет участников',
             'creation_date': creation_date,
             'verified': verified,
-            'pinned_messages': pinned_message.message if pinned_message else 'Нет закрепленного сообщения',
+            'pinned_messages': [{
+                'text': pinned_message.message if pinned_message else 'Нет закрепленного сообщения',
+                'id': pinned_message_id if pinned_message else None
+            }],
             'last_messages': [{'post_id': post.id, 'post_text': post.text, 'post_views': post.views}
                                         for post in last_messages[:limit]],
             'average_views': average_views,
         }
-        print(data['average_views'])
-        return data
 
+        return data
 
     except Exception as e:
         print(f"Ошибка: {e}")

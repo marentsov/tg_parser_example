@@ -5,3 +5,4 @@ __pycache__/
 *.session
 .idea
 test_session.txt
+*.txt

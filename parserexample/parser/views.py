@@ -9,8 +9,6 @@ from asgiref.sync import async_to_sync
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 
-from datetime import datetime
-
 from parserexample.parser.forms import ChannelParseForm
 from parserexample.parser.parser import tg_parser
 from parserexample.parser.models import TelegramChannel, ChannelStats

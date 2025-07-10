@@ -98,14 +98,16 @@
                     <div class="card bg-light">
                         <div class="card-body">
                             <h5 class="card-title">Закрепленное сообщение</h5>
-                            <p class="card-text">{{ channel.pinned_messages }}</p>
+                            <p class="card-text">{{ channel.pinned_messages.text }}</p>
                             <div class="mt-3">
-                                {% if channel.pinned_messages != 'Нет закрепленного сообщения' %}
+                                {% if channel.pinned_messages.id %}
                                     <a href="https://t.me/{{ channel.username }}/{{ channel.pinned_messages.id }}"
-                                       class="btn btn-outline-primary btn-sm"
-                                       target="_blank">
+                                        class="btn btn-outline-primary btn-sm"
+                                        target="_blank">
                                         <i class="bi bi-telegram"></i> Открыть закрепленное сообщение
                                     </a>
+                                {% else %}
+                                    <span class="text-muted">Нет закрепленного сообщения</span>
                                 {% endif %}
                                 </div>
                         </div>
