@@ -65,7 +65,7 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
                                         for post in last_messages[:limit]],
             'average_views': average_views,
         }
-
+        print(data['pinned_messages'])
         return data
 
     except Exception as e:
