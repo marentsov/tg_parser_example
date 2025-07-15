@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -13,6 +15,8 @@ from parserexample.parser.forms import ChannelParseForm
 from parserexample.parser.parser import tg_parser
 from parserexample.parser.models import TelegramChannel, ChannelStats
 
+
+log = logging.getLogger(__name__)
 
 def index_view(request):
     return render(
@@ -57,6 +61,12 @@ class ParserView(FormView):
                 'average_views': data['average_views'],
             }
         )
+
+        if created:
+            log.info(f'Создан новый канал: {channel.title}')
+        else:
+            log.info(f'Обновлен канал: {channel.title}')
+
         return channel, created
 
     def save_stats(self, channel, data):
@@ -81,17 +91,23 @@ class ParserView(FormView):
         # Обновляем дату парсинга для телеграм канала
         channel.parsed_at = current_date
         channel.save(update_fields=['parsed_at'])
+        log.info(f'Для канала: {channel.title} записана статистика; '
+                 f'- Подписчики: {current_count} прирост: {daily_growth}')
 
 
     def form_valid(self, form):
         """ Обработка формы """
         identifier = form.cleaned_data['channel_identifier']
         limit = form.cleaned_data['limit']
+        log.info(f'Начинаем обработку данных для канала; '
+                 f'- {identifier} лимит - {limit}')
 
         try:
             # Запуск асинхронной функции парсинга
             async_parser = async_to_sync(self.async_tg_parser)
             parsed_data = async_parser(identifier, limit)
+            log.info(f'Парсинг завершен для канала;'
+                     f'- {parsed_data['title']} ({parsed_data['channel_id']}')
 
             # Сохранение полученных данных
             channel, created = self.save_channel(parsed_data)
@@ -114,6 +130,7 @@ class ParserListView(ListView):
     model = TelegramChannel
     template_name = 'channels_list.html'
     context_object_name = 'channels'
+    ordering = ['-parsed_at']
 
 
 class ParserDetailView(DetailView):
