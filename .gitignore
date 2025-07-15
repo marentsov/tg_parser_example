@@ -6,3 +6,8 @@ __pycache__/
 .idea
 test_session.txt
 *.txt
+# Logs
+*.log
+*.log.*
+logs/
+var/log/
