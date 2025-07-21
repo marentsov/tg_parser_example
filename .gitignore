@@ -4,6 +4,8 @@ __pycache__/
 .env
 *.session
 .idea
+# JetBrains IDE
+.idea/
 test_session.txt
 *.txt
 # Logs
