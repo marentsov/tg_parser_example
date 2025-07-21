@@ -11,3 +11,89 @@ test_session.txt
 *.log.*
 logs/
 var/log/
+
+# Стандартный .gitignore для Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+.venv/
+env/
+venv/
+.venv*/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# Файлы сессий и кеша Celery
+celerybeat-schedule*
+celerybeat-schedule.*
+celerybeat.pid
+
+# Файлы базы данных
+*.sqlite3
+*.db
+*.rdb
+dump.rdb
+
+# Файлы окружения и секреты
+.env
+.secrets
+.env.prod
+.env.local
+.env.dev
+.envrc
+
+# Файлы сессий Telegram
+*.session
+session_*
+test_session.*
+
+# Системные файлы
+.DS_Store
+.idea/
+.vscode/
+__pycache__/
+*.swp
+*.bak
+~$*
+
+# Файлы сборки и пакетов
+/dist/
+/build/
+*.egg-info/
+*.egg
+*.manifest
+*.spec
+
+# Файлы тестов и покрытия
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Статические файлы (собираются автоматически)
+/staticfiles/
+/mediafiles/
+
+# Миграции (кроме __init__.py)
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Файлы специфичные для вашего проекта
+/uv.lock
+/update_parser.py
+/get_session_string.py
+/session_to_string.py
+/django.log
+/errors.log
+/test_session.txt
+
+# Файлы редакторов
+.ropeproject
+
+# Файлы операционных систем
+Thumbs.db
+ehthumbs.db
+Desktop.ini

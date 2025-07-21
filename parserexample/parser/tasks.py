@@ -50,8 +50,6 @@ def parse_channel(channel_id):
             except Exception as e:
                 log.error(f'Unexpected error: - {e}', exc_info=True)
 
-    #loop = asyncio.get_event_loop()
-    #loop.run_until_complete(run_parser(channel))
     try:
         asyncio.run(run_parser(channel))
     except ConnectionError as e:
