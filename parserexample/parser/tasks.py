@@ -5,6 +5,7 @@ import logging
 
 from asgiref.sync import sync_to_async
 from celery import shared_task
+from django.db import DatabaseError, IntegrityError
 from django.utils import timezone
 from telethon import TelegramClient
 from telethon.sessions import StringSession
@@ -18,40 +19,43 @@ log = logging.getLogger(__name__)
 @shared_task
 def parse_channel(channel_id):
     """Celery task for channel parse"""
-
     try:
         channel = TelegramChannel.objects.get(channel_id=channel_id)
     except TelegramChannel.DoesNotExist:
         log.error(f"Channel with ID {channel_id} does not exist in database")
         return
+    except DatabaseError as e:
+        log.error(f'Database error while fetching channel -;'
+                  f'{channel_id} - {e}')
+        return
 
-    client = TelegramClient(
-        StringSession(settings.TELEGRAM_SESSION_STRING),
-        settings.TELEGRAM_API_ID,
-        settings.TELEGRAM_API_HASH,
-    )
 
-    async def run_parser(channel):
+
+    async def run_parser(channel_obj):
         """Secondary func for async parsing"""
-        try:
-            # make connection with Telegram
-            await client.connect()
+        async with TelegramClient(
+            StringSession(settings.TELEGRAM_SESSION_STRING),
+            settings.TELEGRAM_API_ID,
+            settings.TELEGRAM_API_HASH,
+        ) as client:
+            try:
+                # make connection with Telegram
+                await client.connect()
+                data = await tg_parser(channel_obj.username, client)
+                # using sync_to_async to avoid Django ORM errors (cause ORM is sync)
+                await sync_to_async(save_channel_data)(channel_obj, data)
+                await sync_to_async(save_channel_stats)(channel_obj, data)
+            except (DatabaseError, IntegrityError) as e:
+                log.error(f'Database safe error for {channel_obj.username} - {e}')
+            except Exception as e:
+                log.error(f'Unexpected error: - {e}', exc_info=True)
 
-            data = await tg_parser(channel.username, client)
-            # using sync_to_async to avoid Django ORM errors (cause ORM is sync)
-            await sync_to_async(save_channel_data)(channel, data)
-            await sync_to_async(save_channel_stats)(channel, data)
-
-        except Exception as e:
-            log.error(f"Error with channel parsing {channel.channel_id}: {str(e)}")
-        finally:
-            # disconnect telegram client
-            if client.is_connected():
-                await client.disconnect()
-                log.info(f"Telegram client disconnected for channel {channel.username}")
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run_parser(channel))
+    #loop = asyncio.get_event_loop()
+    #loop.run_until_complete(run_parser(channel))
+    try:
+        asyncio.run(run_parser(channel))
+    except ConnectionError as e:
+        log.error(f"Connection failed for {channel_id}: {e}")
 
 
 def save_channel_data(channel, data):
