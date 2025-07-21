@@ -1,8 +1,7 @@
-from telethon import TelegramClient
 from telethon.tl.functions.contacts import SearchRequest
 
-async def tg_search(client, query, limit=10):
 
+async def tg_search(client, query, limit=10):
     try:
         await client.start()
 
@@ -10,7 +9,6 @@ async def tg_search(client, query, limit=10):
 
         for channel in result.chats:
             print(channel.title, channel.participants_count, channel.id)
-
 
     except Exception as e:
         print(f"Ошибка: {e}")

@@ -35,21 +35,28 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
         # получаем 10 последних постов из канала
         last_messages = await client.get_messages(channel, limit=limit)
 
+        data = {
+            "title": channel.title,
+            "id": channel.id,
+            "description": description if description else "Нет описания",
+            "username": channel.username,
+            "participants_count": participants_count
+            if participants_count
+            else "Нет участников",
+            "pinned_messages": pinned_message.message
+            if pinned_message
+            else "Нет закрепленного сообщения",
+            "last_messages": [
+                {"post_id": post.id, "post_text": post.text, "post_views": post.views}
+                for post in last_messages
+            ]
+            if last_messages
+            else "Нет постов",
+        }
 
-        data = {'title': channel.title,
-                'id': channel.id,
-                'description': description if description else 'Нет описания',
-                'username': channel.username,
-                'participants_count': participants_count if participants_count else 'Нет участников',
-                'pinned_messages': pinned_message.message if pinned_message else 'Нет закрепленного сообщения',
-                'last_messages': [{'post_id': post.id, 'post_text': post.text, 'post_views': post.views}
-                    for post in last_messages] if last_messages else 'Нет постов'
-                }
-
-        print(data) # вывод в консоль для наглядности
+        print(data)  # вывод в консоль для наглядности
         print(channel.__dict__)
         return data
-
 
     except Exception as e:
         print(f"Ошибка: {e}")
