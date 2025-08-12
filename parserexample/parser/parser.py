@@ -44,7 +44,7 @@ async def tg_parser(url: str, client: TelegramClient, limit: int = 10) -> dict:
         channel = await client.get_entity(url)
         data["title"] = channel.title  # Channel title
         data["channel_id"] = channel.id  # Channel id
-        data["username"] = channel.username  # Channel username
+        data["username"] = channel.username if channel.username else '-'  # Channel username
         data["verified"] = channel.verified  # Is channel verified? (boolean)
         # Channel creation date
         data["creation_date"] = channel.date.isoformat() if channel.date else None

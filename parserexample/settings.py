@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from celery.schedules import crontab
+import logging
 
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
@@ -46,7 +47,7 @@ CELERY_TIMEZONE = "Europe/Moscow"  # project timezone
 CELERY_BEAT_SCHEDULE = {
     "parse-all-channels-every-day-12-30": {
         "task": "parserexample.parser.tasks.parse_all_channels",  # path to task
-        "schedule": crontab(hour=14, minute=55),  # start task every day at 12 30
+        "schedule": crontab(hour=10, minute=54),  # start task every day at 12 30
     },
 }
 
@@ -75,8 +76,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "parserexample",
     "parserexample.parser",
+    "parserexample.searcher",
 ]
 
 MIDDLEWARE = [
